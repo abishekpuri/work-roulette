@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<title> Work Roulette </title>
+<header>
+  <!-- Importing JQuery and Bootstrap -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="roulette.js"></script>
+</header>
+<body>
+  <div id='tasks'>
+    <h1> Add Tasks that need to be done </h1>
+    <input type='text' id='listInput'></input>
+    <button id='addList' onclick='addToList()'>Add To List</button>
+    <ul id='taskList'>
+    </ul>
+  </div>
+  <div id='roulette'>
+    <button id='startRoulette' onclick='startRoulette()'> Start The Roulette! </button>
+    <h1 id='currentTask'></h1><br>
+    <h1 id='pointsAvailable'></h1>
+    <button id='completed' onclick='completedTask()'> Finished the Task! </button>
+  </div>
+  <div id="userData">
+    <h1> All User Stats </h1>
+    <h3>Points Earnt : </h3>
+    <p id='totalPoints'>0</p>
+    <h3>Completed Tasks List </h3>
+    <ul id='completedTasks'>
+    </ul>
+    <button id='save' onclick='saveData()'> Save all your information </button>
+  </div>
+
+</body>
+</html>
