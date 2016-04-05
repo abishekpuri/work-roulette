@@ -1,12 +1,13 @@
 
 currentTaskPosition = 0;
+userID = -1;
 //This will add the listInput into the List of Tasks, assigning it a random number of points
 function addToList(){
   listInput = $('#listInput').val();
   points = Math.floor(Math.random()*50);
   liString = listInput+" | "+points+"  ";
   if(listInput != '') {
-    $('#taskList').append("<li>"+liString+"<button onclick='deleteFromList(this)'>Remove</button></li>");
+    $('#taskList').append("<li>"+liString+"</li>");
     $('#listInput').val('');
   }
   else {
@@ -15,6 +16,7 @@ function addToList(){
 }
 
 //This will delete a task from the list
+//TO DO : Currently not being used
 function deleteFromList(element){
   if(confirm('Would you like to delete this item?') == 1){
     $(element).parent().remove();
@@ -23,11 +25,11 @@ function deleteFromList(element){
 // This will begin the roulette
 function startRoulette(){
   if($('#currentTask').text()=='') {
-    allTasks = $('#taskList').children();
+    allTasks = $('#taskList').children('li');
     taskToDoIndex = Math.floor(Math.random()*allTasks.length);
     currentTaskPosition = taskToDoIndex;
-    task = $('li').get(taskToDoIndex).innerHTML;
-    task = task.substr(0,task.length-55).split('|');
+    task = $('#taskList li').get(taskToDoIndex).innerHTML;
+    task = task.split('|');
     task[1] = parseInt(task[1]);
     $('#currentTask').text('The Roulette Assigned Task Is : ' + task[0]);
     $('#pointsAvailable').text('The Number of Points Up For Grabs are : '+task[1]);
@@ -47,6 +49,64 @@ function completedTask(){
   $('#currentTask').text('');
   $('#pointsAvailable').text('');
   $('#completed').hide();
+}
+
+//This will save all the data of the user
+function saveData(){
+  points = parseInt($("#totalPoints").text());
+  pending = [];
+  //This will create a list of all pending and completed tasks
+  $('#taskList li').each(function(r){
+    pending.push($('#taskList li').get(r).innerHTML);
+  });
+  completed = [];
+  $('#completedTasks li').each(function(r){
+    completed.push($('#completedTasks li').get(r).innerHTML);
+  });
+  pendingTasks = "{";
+  for (i = 0;i < pending.length;i++) {
+    pendingTasks += pending[i];
+    if(i == pending.length - 1) {
+      pendingTasks += "}";
+    }
+    else {
+      pendingTasks += ',';
+    }
+  }
+  completedTasks = "{";
+  for (i = 0;i < completed.length;i++) {
+    completedTasks += completed[i];
+    if(i == completed.length - 1) {
+      completedTasks += "}";
+    }
+    else {
+      completedTasks += ',';
+    }
+  }
+  $.post('/save',{
+    'points': points,
+    'id': userID,
+    'completed': completedTasks,
+    'pending': pendingTasks
+  },function(result) {
+    alert(result.user_id);
+  })
+}
+
+//This will get your data back using the user id
+function retrieveData(){
+  userID = prompt('What is your userID?');
+  $.post('/retrieve',{
+    'userID': userID
+  },function(a) {
+    $('#totalPoints').text(a.points);
+    for(i = 0;i < a.pendingtasks.length;i++) {
+      $('#taskList').append("<li>"+a.pendingtasks[i]+"</li>");
+    }
+    for(i = 0;i < a.completedtasks.length;i++) {
+      $('#completedTasks').append("<li>"+a.completedtasks[i]+"</li>");
+    }
+  })
 }
 // This allows the use of enter to submit a new task
 $(document).ready(function(){
