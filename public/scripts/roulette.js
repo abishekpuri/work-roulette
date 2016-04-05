@@ -37,7 +37,6 @@ function startRoulette(){
 //This will complete a task
 function completedTask(){
   pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1]);
-  alert(pointsEarned);
   taskCompleted = $('#currentTask').text();
   taskCompleted = taskCompleted.split(':');
   $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
