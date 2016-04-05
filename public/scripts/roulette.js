@@ -1,3 +1,5 @@
+
+currentTaskPosition = 0;
 //This will add the listInput into the List of Tasks, assigning it a random number of points
 function addToList(){
   listInput = $('#listInput').val();
@@ -23,6 +25,7 @@ function startRoulette(){
   if($('#currentTask').text()=='') {
     allTasks = $('#taskList').children();
     taskToDoIndex = Math.floor(Math.random()*allTasks.length);
+    currentTaskPosition = taskToDoIndex;
     task = $('li').get(taskToDoIndex).innerHTML;
     task = task.substr(0,task.length-55).split('|');
     task[1] = parseInt(task[1]);
@@ -40,7 +43,7 @@ function completedTask(){
   taskCompleted = $('#currentTask').text();
   taskCompleted = taskCompleted.split(':');
   $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
-  $('#completedTasks').append('<li>'+taskCompleted[1]+'</li>');
+  $('#completedTasks').append($('li').get(currentTaskPosition));
   $('#currentTask').text('');
   $('#pointsAvailable').text('');
   $('#completed').hide();
