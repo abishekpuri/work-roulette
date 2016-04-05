@@ -43,7 +43,7 @@ function completedTask(){
   $('#completedTasks').append('<li>'+taskCompleted[1]+'</li>');
   $('#currentTask').text('');
   $('#pointsAvailable').text('');
-
+  $('#completed').hide();
 }
 // This allows the use of enter to submit a new task
 $(document).ready(function(){
