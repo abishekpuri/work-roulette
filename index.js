@@ -7,7 +7,7 @@ var db = pgp(process.env.DATABASE_URL);
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
@@ -30,8 +30,9 @@ app.post('/retrieve', function(req,res) {
 // '{"task 1","task 2"}' form
 app.post('/save',function(req,res) {
   if(req.body.id == -1) {
+    console.log("request", JSON.stringify(req.body));
     db.one('INSERT INTO userinfo(points,completedtasks,pendingtasks) VALUES'+
-    '($1,$2,$3) returning user_id',[req.body.points,req.body.completed,req.body.pending])
+    '($1,$2,$3) returning user_id', [req.body.points,req.body.completed,req.body.pending])
     .catch(function(error){
       res.send("ERROR : "+error);
     }).then(function(result){

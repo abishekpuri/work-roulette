@@ -63,26 +63,6 @@ function saveData(){
   $('#completedTasks li').each(function(r){
     completed.push($('#completedTasks li').get(r).innerHTML);
   });
-  /*pendingTasks = "{";
-  for (i = 0;i < pending.length;i++) {
-    pendingTasks += pending[i];
-    if(i == pending.length - 1) {
-      pendingTasks += "}";
-    }
-    else {
-      pendingTasks += ',';
-    }
-  }
-  completedTasks = "{";
-  for (i = 0;i < completed.length;i++) {
-    completedTasks += completed[i];
-    if(i == completed.length - 1) {
-      completedTasks += "}";
-    }
-    else {
-      completedTasks += ',';
-    }
-  }*/
   $.post('/save',{
     'points': points,
     'id': userID,
@@ -95,7 +75,7 @@ function saveData(){
 
 //This will get your data back using the user id
 function retrieveData(){
-  userID = prompt('What is your userID?');
+  userID = parseInt(prompt('What is your userID?'));
   $.post('/retrieve',{
     'userID': userID
   },function(a) {
