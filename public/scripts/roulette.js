@@ -76,10 +76,13 @@ function saveData(){
 //This will get your data back using the user id
 function retrieveData(){
   userID = parseInt(prompt('What is your userID?'));
+
   $.post('/retrieve',{
     'userID': userID
   },function(a) {
     $('#totalPoints').text(a.points);
+    $("#taskList").empty();
+    $("#completedTasks").empty();
     for(i = 0;i < a.pendingtasks.length;i++) {
       $('#taskList').append("<li>"+a.pendingtasks[i]+"</li>");
     }
