@@ -89,7 +89,7 @@ function saveData(){
     'completed': completedTasks,
     'pending': pendingTasks
   },function(result) {
-    alert(result.user_id);
+    alert(JSON.stringify(result));
   })
 }
 
