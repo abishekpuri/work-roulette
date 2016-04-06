@@ -32,7 +32,7 @@ app.post('/save',function(req,res) {
   if(req.body.id == -1) {
     console.log("request", JSON.stringify(req.body));
     db.one('INSERT INTO userinfo(points,completedtasks,pendingtasks) VALUES'+
-    '($1,$2,$3) returning user_id', [req.body.points,req.body.completed,req.body.pending])
+    '(${points},${completed},${pending}) returning user_id', req.body)
     .catch(function(error){
       res.send("ERROR : "+error);
     }).then(function(result){
@@ -40,8 +40,8 @@ app.post('/save',function(req,res) {
     })
   }
   else {
-    db.one('UPDATE userinfo SET points = $1,completedtasks = $2,pendingtasks = $3'+
-    ' WHERE user_id=$4 returning user_id',[req.body.points,req.body.completed,req.body.pending,req.body.id])
+    db.one('UPDATE userinfo SET points = ${points}, completedtasks = ${completed}, pendingtasks = ${pending}'+
+    ' WHERE user_id = ${id} returning user_id', req.body)
     .catch(function(error){
       res.send("ERROR : "+error);
     }).then(function(result){
