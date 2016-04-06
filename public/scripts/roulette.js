@@ -63,7 +63,7 @@ function saveData(){
   $('#completedTasks li').each(function(r){
     completed.push($('#completedTasks li').get(r).innerHTML);
   });
-  pendingTasks = "{";
+  /*pendingTasks = "{";
   for (i = 0;i < pending.length;i++) {
     pendingTasks += pending[i];
     if(i == pending.length - 1) {
@@ -82,12 +82,12 @@ function saveData(){
     else {
       completedTasks += ',';
     }
-  }
+  }*/
   $.post('/save',{
     'points': points,
     'id': userID,
-    'completed': completedTasks,
-    'pending': pendingTasks
+    'completed': completed,
+    'pending': pending
   },function(result) {
     alert(JSON.stringify(result));
   })
