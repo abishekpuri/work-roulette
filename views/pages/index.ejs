@@ -4,6 +4,7 @@
   <!-- Importing JQuery and Bootstrap -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
   <script src="scripts/roulette.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/index.css">
 </header>
 <body>
   <div id='tasks'>
@@ -26,9 +27,22 @@
     <h3>Completed Tasks List </h3>
     <ul id='completedTasks'>
     </ul>
+    <div id="dialogBox">
+
+    </div>
+    <div id="rewards">
+      <button id='reward1' data-popup-open='popup-1'> Click for half hour break (12 Points) </button>
+    </div>
+
     <button id='save' onclick='saveData()'> Save all your information </button>
     <button id='retrieve' onclick='retrieveData()'> Retrieve your information </button>
   </div>
-
+  <div class="popup" data-popup="popup-1">
+      <div class="popup-inner">
+          <h2>You have bought a half hour break, enjoy!</h2>
+          <p><a data-popup-close="popup-1" href="#">Close</a></p>
+          <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
+      </div>
+  </div>
 </body>
 </html>

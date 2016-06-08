@@ -3,7 +3,7 @@ var pgp = require('pg-promise')();
 var bodyParser = require("body-parser");
 var app = express();
 
-var db = pgp(process.env.DATABASE_URL);
+var db = pgp(process.env.DATABASE_URL || 'postgres://Abishek@localhost/roulette');
 app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/public'));
