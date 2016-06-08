@@ -97,6 +97,24 @@ function eligibleForReward(reward) {
     return parseInt($('#totalPoints').text()) >= 12;
   }
 }
+
+function clock(minutes,reward_val) {
+  var currentSecond = 0;
+  var currentMinute = minutes;
+  var clock = setInterval(function(){
+    $('[data-clock='+reward_val+']').text(currentMinute+ ' : '+ currentSecond);
+    currentSecond -= 1;
+    if(currentSecond < 0) {
+      currentSecond = 59;
+      currentMinute -= 1;
+    }
+    if(currentMinute < 0) {
+      clearInterval(clock);
+      $('[data-popup="' + reward_val + '"]').fadeOut(350);
+      alert("Time to get back to work!");
+    }
+  },1000);
+}
 // This allows the use of enter to submit a new task
 $(document).ready(function(){
   $('#completed').hide();
@@ -109,12 +127,13 @@ $(document).ready(function(){
   });
   //These deal with the popup stuff
   $('[data-popup-open]').on('click', function(e)  {
-    console.log('Into Open');
-          var targeted_popup_class = jQuery(this).attr('data-popup-open');
-          if(eligibleForReward(targeted_popup_class)) {
+          var reward_val = jQuery(this).attr('data-popup-open');
+          if(eligibleForReward(reward_val)) {
             var currentPoints = parseInt($('#totalPoints').text());
             $('#totalPoints').text(currentPoints - 12);
-            $('[data-popup="' + targeted_popup_class + '"]').fadeIn(350);
+            $('[data-popup="' + reward_val + '"]').fadeIn(350);
+            var minutes = parseInt($('[data-clock='+reward_val+']').attr('data-time'));
+            clock(minutes,reward_val);
           }
           else {
             alert("Need More Points for a Break!!");
@@ -122,8 +141,8 @@ $(document).ready(function(){
           e.preventDefault();
       });
   $('[data-popup-close]').on('click', function(e)  {
-    var targeted_popup_class = jQuery(this).attr('data-popup-close');
-    $('[data-popup="' + targeted_popup_class + '"]').fadeOut(350);
+    var reward_val = jQuery(this).attr('data-popup-close');
+    $('[data-popup="' + reward_val + '"]').fadeOut(350);
     e.preventDefault();
   });
 });

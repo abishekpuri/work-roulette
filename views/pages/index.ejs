@@ -37,12 +37,6 @@
     <button id='save' onclick='saveData()'> Save all your information </button>
     <button id='retrieve' onclick='retrieveData()'> Retrieve your information </button>
   </div>
-  <div class="popup" data-popup="popup-1">
-      <div class="popup-inner">
-          <h2>You have bought a half hour break, enjoy!</h2>
-          <p><a data-popup-close="popup-1" href="#">Close</a></p>
-          <a class="popup-close" data-popup-close="popup-1" href="#">x</a>
-      </div>
-  </div>
+  <%- include popups.ejs %>
 </body>
 </html>
