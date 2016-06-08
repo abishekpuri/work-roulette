@@ -19,12 +19,12 @@ app.get('/', function(req, res) {
 
 app.post('/retrieve', function(req,res) {
   db.one('SELECT * FROM userinfo WHERE user_id=$1',[req.body.userID])
-  .catch(function(err){
-    res.send("ERROR : "+error);
-  }).then(function(result){
+  .then(function(result) {
     res.send(result);
+  }).catch(function(error) {
+    res.send("ERROR: " + error);
   });
-});
+})
 
 //This will save the data of the user, completed and pending tasks stored as
 // '{"task 1","task 2"}' form
@@ -33,19 +33,19 @@ app.post('/save',function(req,res) {
     console.log("request", JSON.stringify(req.body));
     db.one('INSERT INTO userinfo(points,completedtasks,pendingtasks) VALUES'+
     '(${points},${completed},${pending}) returning user_id', req.body)
-    .catch(function(error){
-      res.send("ERROR : "+error);
-    }).then(function(result){
+    .then(function(result){
       res.send(result);
-    })
+    }).catch(function(error){
+      res.send("ERROR : "+error);
+    });
   }
   else {
     db.one('UPDATE userinfo SET points = ${points}, completedtasks = ${completed}, pendingtasks = ${pending}'+
     ' WHERE user_id = ${id} returning user_id', req.body)
-    .catch(function(error){
-      res.send("ERROR : "+error);
-    }).then(function(result){
+    .then(function(result){
       res.send(result);
+    }).catch(function(error){
+      res.send("ERROR : "+error);
     })
   }
 });
