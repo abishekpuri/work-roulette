@@ -60,7 +60,7 @@ function completedTask(){
   taskCompleted = $('#currentTask').text();
   taskCompleted = taskCompleted.split(':');
   $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
-  $('#completedTasks').append($('li').get(currentTaskPosition));
+  $('#completedTasks').append("<li>"+taskCompleted+"</li>");
   $('#currentTask').text('');
   $('#pointsAvailable').text('');
   $('#completed').hide();
