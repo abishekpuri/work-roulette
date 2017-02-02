@@ -1,5 +1,6 @@
 
 currentTaskPosition = 0;
+currentTasks = 0
 userID = -1;
 //This will add the listInput into the List of Tasks, assigning it a random number of points
 function addToList(){
@@ -7,10 +8,11 @@ function addToList(){
   points = (Math.floor(Math.random()*10)+1);
   liString = listInput+" | "+points+"  ";
   if(listInput != '') {
-    $('#taskList').append("<li>"+liString+
+    $('#taskList').append("<li id='"+currentTasks+"'> "+liString+
     "<button onclick='specialComplete(\""+listInput+
-    "\","+points+")'> Finished Task </button>"+"</li>");
+    "\","+points+","+currentTasks+")'> Finished Task </button>"+"</li>");
     $('#listInput').val('');
+    currentTasks += 1;
   }
   else {
     alert('Nothing entered into Input');
@@ -66,9 +68,10 @@ function completedTask(){
   $('#completed').hide();
 }
 
-function specialComplete(task,points){
+function specialComplete(task,points,position){
   pointsEarned = parseInt(points);
   taskCompleted = task;
+  $("#"+position).remove();
   $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
   $('#completedTasks').append("<li>"+taskCompleted+"</li>");
   $('#currentTask').text('');
