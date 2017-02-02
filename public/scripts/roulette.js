@@ -112,7 +112,8 @@ function retrieveData(){
     $("#taskList").empty();
     $("#completedTasks").empty();
     for(i = 0;i < a.pendingtasks.length;i++) {
-      $('#taskList').append("<li>"+a.pendingtasks[i]+"</li>");
+      taskID = a.pendingtasks[i].split(",")[2].split(")")[0];
+      $('#taskList').append("<li id="+taskID+">"+a.pendingtasks[i]+"</li>");
     }
     for(i = 0;i < a.completedtasks.length;i++) {
       $('#completedTasks').append("<li>"+a.completedtasks[i]+"</li>");
