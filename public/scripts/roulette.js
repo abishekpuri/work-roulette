@@ -8,8 +8,21 @@ function addToList(){
   liString = listInput+" | "+points+"  ";
   if(listInput != '') {
     $('#taskList').append("<li>"+liString+
-    "<button onclick='specialComplete("+listInput+
-    ","+points+")'"+"</li>");
+    "<button onclick='specialComplete(\""+listInput+
+    "\","+points+")'> Finished Task </button>"+"</li>");
+    $('#listInput').val('');
+  }
+  else {
+    alert('Nothing entered into Input');
+  }
+}
+
+function addToFinishedList(){
+  listInput = $('#listInput').val();
+  points = (Math.floor(Math.random()*10)+1);
+  liString = listInput+" | "+points+"  ";
+  if(listInput != '') {
+    $('#taskList').append("<li>"+liString+"</li>");
     $('#listInput').val('');
   }
   else {
@@ -43,7 +56,7 @@ function startRoulette(){
 }
 //This will complete a task
 function completedTask(){
-  pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1])+2;
+  pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1]);
   taskCompleted = $('#currentTask').text();
   taskCompleted = taskCompleted.split(':');
   $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
@@ -54,11 +67,10 @@ function completedTask(){
 }
 
 function specialComplete(task,points){
-  pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1]);
-  taskCompleted = $('#currentTask').text();
-  taskCompleted = taskCompleted.split(':');
+  pointsEarned = parseInt(points);
+  taskCompleted = task;
   $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
-  $('#completedTasks').append($('li').get(currentTaskPosition));
+  $('#completedTasks').append("<li>"+taskCompleted+"</li>");
   $('#currentTask').text('');
   $('#pointsAvailable').text('');
   $('#completed').hide();
