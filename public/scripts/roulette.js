@@ -7,7 +7,9 @@ function addToList(){
   points = (Math.floor(Math.random()*10)+1);
   liString = listInput+" | "+points+"  ";
   if(listInput != '') {
-    $('#taskList').append("<li>"+liString+"</li>");
+    $('#taskList').append("<li>"+liString+
+    "<button onclick='specialComplete("+listInput+
+    ","+points+")'"+"</li>");
     $('#listInput').val('');
   }
   else {
@@ -41,6 +43,17 @@ function startRoulette(){
 }
 //This will complete a task
 function completedTask(){
+  pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1])+2;
+  taskCompleted = $('#currentTask').text();
+  taskCompleted = taskCompleted.split(':');
+  $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
+  $('#completedTasks').append($('li').get(currentTaskPosition));
+  $('#currentTask').text('');
+  $('#pointsAvailable').text('');
+  $('#completed').hide();
+}
+
+function specialComplete(task,points){
   pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1]);
   taskCompleted = $('#currentTask').text();
   taskCompleted = taskCompleted.split(':');
@@ -59,7 +72,7 @@ function saveData(){
   $('#taskList li').each(function(r){
     pending.push($('#taskList li').get(r).innerHTML);
   });
-  completed = [];
+  completed = [""];
   $('#completedTasks li').each(function(r){
     completed.push($('#completedTasks li').get(r).innerHTML);
   });
