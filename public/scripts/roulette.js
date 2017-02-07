@@ -86,12 +86,14 @@ function saveData(){
   taskids = [];
   //This will create a list of all pending and completed tasks
   $('#taskList li').each(function(r){
-    pending.push($('#taskList li').get(r).innerHTML);
+    pending.push($('#taskList li').get(r).innerHTML.split("<")[0]);
     taskids.push(parseInt($("ul li:nth-child("+(r+1)+")").attr('id')));
   });
   completed = [""];
   $('#completedTasks li').each(function(r){
-    completed.push($('#completedTasks li').get(r).innerHTML);
+    if($('#completedTasks li').get(r).innerHTML != "") {
+      completed.push($('#completedTasks li').get(r).innerHTML);
+    }
   });
   $.post('/save',{
     'points': points,
@@ -117,7 +119,9 @@ function retrieveData(){
     currentTasks = a.pendingtasks.length + 1;
     for(i = 0;i < a.pendingtasks.length;i++) {
       taskID = a.taskids[i];
-      $('#taskList').append("<li id="+taskID+">"+a.pendingtasks[i]+"</li>");
+      $('#taskList').append("<li id="+taskID+">"+a.pendingtasks[i]+"<button " +
+      "onclick='specialComplete(\""+a.pendingtasks[i]+"\",4,"+taskID+")'> Finished Task </button>"
+      +"</li>");
     }
     for(i = 0;i < a.completedtasks.length;i++) {
       $('#completedTasks').append("<li>"+a.completedtasks[i]+"</li>");
