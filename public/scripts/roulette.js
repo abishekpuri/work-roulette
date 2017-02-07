@@ -87,7 +87,7 @@ function saveData(){
   //This will create a list of all pending and completed tasks
   $('#taskList li').each(function(r){
     pending.push($('#taskList li').get(r).innerHTML);
-    taskids.push($("ul li:nth-child("+(r+1)+")").attr('id'))
+    taskids.push(parseInt($("ul li:nth-child("+(r+1)+")").attr('id')));
   });
   completed = [""];
   $('#completedTasks li').each(function(r){
