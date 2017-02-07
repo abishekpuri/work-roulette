@@ -83,9 +83,11 @@ function specialComplete(task,points,position){
 function saveData(){
   points = parseInt($("#totalPoints").text());
   pending = [];
+  taskids = [];
   //This will create a list of all pending and completed tasks
   $('#taskList li').each(function(r){
     pending.push($('#taskList li').get(r).innerHTML);
+    taskids.push($("ul li:nth-child("+(r+1)+")").attr('id'))
   });
   completed = [""];
   $('#completedTasks li').each(function(r){
@@ -95,7 +97,8 @@ function saveData(){
     'points': points,
     'id': userID,
     'completed': completed,
-    'pending': pending
+    'pending': pending,
+    'taskids': taskids
   },function(result) {
     alert(JSON.stringify(result));
   })
@@ -111,8 +114,9 @@ function retrieveData(){
     $('#totalPoints').text(a.points);
     $("#taskList").empty();
     $("#completedTasks").empty();
+    currentTasks = a.pendingtasks.length + 1;
     for(i = 0;i < a.pendingtasks.length;i++) {
-      taskID = a.pendingtasks[i].split(",")[2].split(")")[0];
+      taskID = a.taskids[i];
       $('#taskList').append("<li id="+taskID+">"+a.pendingtasks[i]+"</li>");
     }
     for(i = 0;i < a.completedtasks.length;i++) {
