@@ -91,7 +91,7 @@ function saveData(){
   });
   completed = [""];
   $('#completedTasks li').each(function(r){
-    if($('#completedTasks li').get(r).innerHTML != "") {
+    if($('#completedTasks li').get(r).innerHTML != " ") {
       completed.push($('#completedTasks li').get(r).innerHTML);
     }
   });
@@ -123,7 +123,7 @@ function retrieveData(){
       "onclick='specialComplete(\""+a.pendingtasks[i]+"\",4,"+taskID+")'> Finished Task </button>"
       +"</li>");
     }
-    for(i = 0;i < a.completedtasks.length;i++) {
+    for(i = 1;i < a.completedtasks.length;i++) {
       $('#completedTasks').append("<li>"+a.completedtasks[i]+"</li>");
     }
   })
