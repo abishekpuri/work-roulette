@@ -26,13 +26,23 @@ app.post('/retrieve', function(req,res) {
   });
 })
 
+//This will add a task to the task table
+app.post('/addTask',function(req,res) {
+  db.one('INSERT INTO tasks(category,description,points) VALUES' +
+         '(${category},${description},${points}) returning id', req.body)
+  .then(function(result){
+    res.send(result);
+  }).catch(function(error){
+    res.send("ERROR : " + error);
+  });
+});
 //This will save the data of the user, completed and pending tasks stored as
 // '{"task 1","task 2"}' form
 app.post('/save',function(req,res) {
   if(req.body.id == -1) {
     console.log("request", JSON.stringify(req.body));
-    db.one('INSERT INTO userinfo(points,completedtasks,pendingtasks,taskids) VALUES'+
-    '(${points},${completed},${pending},${taskids}::int[]) returning user_id', req.body)
+    db.one('INSERT INTO userinfo(points,completedtasks,pendingtasks,category) VALUES'+
+    '(${points},${completed},${pending},${category}) returning user_id', req.body)
     .then(function(result){
       res.send(result);
     }).catch(function(error){
@@ -41,7 +51,7 @@ app.post('/save',function(req,res) {
   }
   else {
     db.one('UPDATE userinfo SET points = ${points}, completedtasks = ${completed}, pendingtasks = ${pending}, '+
-    'taskids = ${taskids}::int[] WHERE user_id = ${id} returning user_id', req.body)
+    'category = ${category} WHERE user_id = ${id} returning user_id', req.body)
     .then(function(result){
       res.send(result);
     }).catch(function(error){

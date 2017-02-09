@@ -4,15 +4,23 @@ currentTasks = 0
 userID = -1;
 //This will add the listInput into the List of Tasks, assigning it a random number of points
 function addToList(){
-  listInput = $('#listInput').val();
+  listInput = $('#category').val()+": "+$('#task').val();
   points = (Math.floor(Math.random()*10)+1);
   liString = listInput+" | "+points+"  ";
   if(listInput != '') {
-    $('#taskList').append("<li id='"+currentTasks+"'> "+liString+
-    "<button onclick='specialComplete(\""+listInput+
-    "\","+points+","+currentTasks+")'> Finished Task </button>"+"</li>");
-    $('#listInput').val('');
-    currentTasks += 1;
+    $.post('/addTask', {
+      'category': $('#category').val(),
+      'description': $('#task').val(),
+      'points': points
+    },function(result) {
+      alert(result);
+      $('#taskList').append("<li id='"+currentTasks+"'> "+liString+
+      "<button onclick='specialComplete(\""+listInput+
+      "\","+points+","+currentTasks+")'> Finished Task </button>"+"</li>");
+      $('#task').val('');
+      $('#category').val('');
+      currentTasks += 1;
+    })
   }
   else {
     alert('Nothing entered into Input');
@@ -83,11 +91,11 @@ function specialComplete(task,points,position){
 function saveData(){
   points = parseInt($("#totalPoints").text());
   pending = [];
-  taskids = [];
+  category = [];
   //This will create a list of all pending and completed tasks
   $('#taskList li').each(function(r){
-    pending.push($('#taskList li').get(r).innerHTML.split("<")[0]);
-    taskids.push(parseInt(r));
+    pending.push($('#taskList li').get(r).innerHTML.split("<")[0].split(":")[1]);
+    category.push($('#taskList li').get(r).innerHTML.split("<")[0].split(":")[0]);
   });
   completed = [""];
   $('#completedTasks li').each(function(r){
@@ -100,7 +108,7 @@ function saveData(){
     'id': userID,
     'completed': completed,
     'pending': pending,
-    'taskids': taskids
+    'category': category
   },function(result) {
     alert(JSON.stringify(result));
   })
@@ -108,8 +116,6 @@ function saveData(){
 
 //This will get your data back using the user id
 function retrieveData(){
-  userID = parseInt(prompt('What is your user ID?'));
-
   $.post('/retrieve',{
     'userID': userID
   },function(a) {
@@ -118,9 +124,8 @@ function retrieveData(){
     $("#completedTasks").empty();
     currentTasks = a.pendingtasks.length;
     for(i = 0;i < a.pendingtasks.length;i++) {
-      taskID = a.taskids[i];
-      $('#taskList').append("<li id="+taskID+">"+a.pendingtasks[i]+"<button " +
-      "onclick='specialComplete(\""+a.pendingtasks[i]+"\",4,"+taskID+")'> Finished Task </button>"
+      $('#taskList').append("<li id="+i+">"+a.category[i]+": "+a.pendingtasks[i]+"<button " +
+      "onclick='specialComplete(\""+a.pendingtasks[i]+"\",4,"+i+")'> Finished Task </button>"
       +"</li>");
     }
     for(i = 1;i < a.completedtasks.length;i++) {
@@ -157,9 +162,29 @@ $(document).ready(function(){
   $('#completed').hide();
   $('#dialogBox').hide();
   $('#listInput').focus();
-  $( "#listInput" ).keypress(function(e) {
+  while(true) {
+    signin = confirm("Do you already have an account?");
+    if(signin == true) {
+      handle = prompt("Please type in your username");
+      $.post("/signIn", {
+        'username': handle
+      },function(result) {
+        if(result.status == "success") {
+          alert("You are logged in!");
+          userID = result.userid;
+          retrieveData();
+        }
+        else {
+
+        }
+      })
+    }
+  }
+};
+  $( "#task" ).keypress(function(e) {
     if(e.which == 13) {
       addToList();
+      $("#category").focus();
     }
   });
   //These deal with the popup stuff
