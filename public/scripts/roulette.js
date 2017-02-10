@@ -11,29 +11,16 @@ function addToList(){
     $.post('/addTask', {
       'category': $('#category').val(),
       'description': $('#task').val(),
-      'points': points
+      'points': points,
+      'acct': userID
     },function(result) {
-      alert(result);
-      $('#taskList').append("<li id='"+currentTasks+"'> "+liString+
+      $('#taskList').append("<li id='"+t_id+"'> "+liString+
       "<button onclick='specialComplete(\""+listInput+
-      "\","+points+","+currentTasks+")'> Finished Task </button>"+"</li>");
+      "\","+points+","+t_id+")'> Finished Task </button>"+"</li>");
       $('#task').val('');
       $('#category').val('');
       currentTasks += 1;
     })
-  }
-  else {
-    alert('Nothing entered into Input');
-  }
-}
-
-function addToFinishedList(){
-  listInput = $('#listInput').val();
-  points = (Math.floor(Math.random()*10)+1);
-  liString = listInput+" | "+points+"  ";
-  if(listInput != '') {
-    $('#taskList').append("<li>"+liString+"</li>");
-    $('#listInput').val('');
   }
   else {
     alert('Nothing entered into Input');
@@ -77,61 +64,57 @@ function completedTask(){
 }
 
 function specialComplete(task,points,position){
-  pointsEarned = parseInt(points);
-  taskCompleted = task;
-  $("#"+position).remove();
-  $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
-  $('#completedTasks').append("<li>"+taskCompleted+"</li>");
-  $('#currentTask').text('');
-  $('#pointsAvailable').text('');
-  $('#completed').hide();
-}
-
-//This will save all the data of the user
-function saveData(){
-  points = parseInt($("#totalPoints").text());
-  pending = [];
-  category = [];
-  //This will create a list of all pending and completed tasks
-  $('#taskList li').each(function(r){
-    pending.push($('#taskList li').get(r).innerHTML.split("<")[0].split(":")[1]);
-    category.push($('#taskList li').get(r).innerHTML.split("<")[0].split(":")[0]);
-  });
-  completed = [""];
-  $('#completedTasks li').each(function(r){
-    if($('#completedTasks li').get(r).innerHTML != " ") {
-      completed.push($('#completedTasks li').get(r).innerHTML);
-    }
-  });
-  $.post('/save',{
-    'points': points,
-    'id': userID,
-    'completed': completed,
-    'pending': pending,
-    'category': category
-  },function(result) {
-    alert(JSON.stringify(result));
+  $.post("/completedTask",{
+    'id': position
+  },function(result){
+    pointsEarned = parseInt(points);
+    taskCompleted = task;
+    $("#"+position).remove();
+    $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
+    $('#completedTasks').append("<li>"+taskCompleted+"</li>");
+    $('#currentTask').text('');
+    $('#pointsAvailable').text('');
+    $('#completed').hide();
   })
-}
+};
 
 //This will get your data back using the user id
 function retrieveData(){
+  $("#taskList").empty();
+  $("#completedTasks").empty();
+  if(userID == -1) {
+    userID = parseInt(prompt("What is your account number?"));
+  }
   $.post('/retrieve',{
     'userID': userID
   },function(a) {
-    $('#totalPoints').text(a.points);
-    $("#taskList").empty();
-    $("#completedTasks").empty();
-    currentTasks = a.pendingtasks.length;
-    for(i = 0;i < a.pendingtasks.length;i++) {
-      $('#taskList').append("<li id="+i+">"+a.category[i]+": "+a.pendingtasks[i]+"<button " +
-      "onclick='specialComplete(\""+a.pendingtasks[i]+"\",4,"+i+")'> Finished Task </button>"
-      +"</li>");
-    }
-    for(i = 1;i < a.completedtasks.length;i++) {
-      $('#completedTasks').append("<li>"+a.completedtasks[i]+"</li>");
+    points = a.reduce(function(a,b){
+      if (b.completed == true) {
+        return a + b.points;
+      }
+      else {
+        return a;
+      }
+    },0);
+    $('#totalPoints').text(points);
+    for(i = 0;i < a.length;i++) {
+      if(a[i].completed == false) {
+        $('#taskList').append("<li id="+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +
+        "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
+        +"</li>");
+      }
+      else {
+        $('#completedTasks').append("<li>"+a[i].category+": "+a[i].description+"</li>");
+      }
     }
   })
+}
+
+//This will assign the user an ID at the beginning of his session
+function assignID(){
+  $.post('/assignID',{},function(a){
+    userID = a.user_id;
+  });
 }
 
 function eligibleForReward(reward) {
@@ -162,25 +145,12 @@ $(document).ready(function(){
   $('#completed').hide();
   $('#dialogBox').hide();
   $('#listInput').focus();
-  while(true) {
-    signin = confirm("Do you already have an account?");
-    if(signin == true) {
-      handle = prompt("Please type in your username");
-      $.post("/signIn", {
-        'username': handle
-      },function(result) {
-        if(result.status == "success") {
-          alert("You are logged in!");
-          userID = result.userid;
-          retrieveData();
-        }
-        else {
-
-        }
-      })
-    }
+  existinguser = confirm("Do you already have an account?");
+  if(!existinguser) {
+    assignID();
+  } else {
+    retrieveData();
   }
-};
   $( "#task" ).keypress(function(e) {
     if(e.which == 13) {
       addToList();

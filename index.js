@@ -18,7 +18,8 @@ app.get('/', function(req, res) {
 });
 
 app.post('/retrieve', function(req,res) {
-  db.one('SELECT * FROM userinfo WHERE user_id=$1',[req.body.userID])
+  db.any('SELECT t_id,points,category,description,completed FROM tasks WHERE ' +
+  'acct=$1 order by category',[req.body.userID])
   .then(function(result) {
     res.send(result);
   }).catch(function(error) {
@@ -26,40 +27,35 @@ app.post('/retrieve', function(req,res) {
   });
 })
 
+//This will change an uncompleted task to completed
+app.post("/completedTask", function(req,res) {
+  db.none("UPDATE tasks set completed = true where t_id=${id}",req.body)
+  .then(function(result) {
+    res.send(result);
+  }).catch(function(error) {
+    res.send(error);
+  });
+})
+
 //This will add a task to the task table
 app.post('/addTask',function(req,res) {
-  db.one('INSERT INTO tasks(category,description,points) VALUES' +
-         '(${category},${description},${points}) returning id', req.body)
+  db.one('INSERT INTO tasks(category,description,points,acct,completed) VALUES' +
+         '(${category},${description},${points},${acct},false) returning t_id', req.body)
   .then(function(result){
     res.send(result);
   }).catch(function(error){
     res.send("ERROR : " + error);
   });
 });
-//This will save the data of the user, completed and pending tasks stored as
-// '{"task 1","task 2"}' form
-app.post('/save',function(req,res) {
-  if(req.body.id == -1) {
-    console.log("request", JSON.stringify(req.body));
-    db.one('INSERT INTO userinfo(points,completedtasks,pendingtasks,category) VALUES'+
-    '(${points},${completed},${pending},${category}) returning user_id', req.body)
-    .then(function(result){
-      res.send(result);
-    }).catch(function(error){
-      res.send("ERROR : "+error);
-    });
-  }
-  else {
-    db.one('UPDATE userinfo SET points = ${points}, completedtasks = ${completed}, pendingtasks = ${pending}, '+
-    'category = ${category} WHERE user_id = ${id} returning user_id', req.body)
-    .then(function(result){
-      res.send(result);
-    }).catch(function(error){
-      res.send("ERROR : "+error);
-    })
-  }
-});
 
+app.post('/assignID', function(req,res) {
+  db.one("INSERT INTO ACCOUNT(points) VALUES(0) returning user_id")
+  .then(function(result) {
+    res.send(result);
+  }).catch(function(error) {
+    res.send(error);
+  })
+})
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
