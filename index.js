@@ -19,7 +19,7 @@ app.get('/', function(req, res) {
 
 app.post('/retrieve', function(req,res) {
   db.any('SELECT t_id,points,category,description,completed FROM tasks WHERE ' +
-  'acct=$1 order by category',[req.body.userID])
+  'acct=$1 order by category,description',[req.body.userID])
   .then(function(result) {
     res.send(result);
   }).catch(function(error) {

@@ -6,7 +6,6 @@ userID = -1;
 function addToList(){
   listInput = $('#category').val()+": "+$('#task').val();
   points = (Math.floor(Math.random()*10)+1);
-  liString = listInput+" | "+points+"  ";
   if(listInput != '') {
     $.post('/addTask', {
       'category': $('#category').val(),
@@ -14,9 +13,9 @@ function addToList(){
       'points': points,
       'acct': userID
     },function(result) {
-      $('#taskList').append("<li id='"+t_id+"'> "+liString+
+      $('#taskList').append("<li id='"+result.t_id+"'> "+listInput+
       "<button onclick='specialComplete(\""+listInput+
-      "\","+points+","+t_id+")'> Finished Task </button>"+"</li>");
+      "\","+points+","+result.t_id+")'> Finished Task </button>"+"</li>");
       $('#task').val('');
       $('#category').val('');
       currentTasks += 1;
