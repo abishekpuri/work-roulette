@@ -11,4 +11,6 @@ acct int references account(user_id) on delete cascade,
 points int,
 category text,
 description text,
+estimatedCompletion int,
+actualCompletion int,
 completed bool);

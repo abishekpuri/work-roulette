@@ -2,6 +2,7 @@
 currentTaskPosition = 0;
 currentTasks = 0
 userID = -1;
+totalHours = 0;
 //This will add the listInput into the List of Tasks, assigning it a random number of points
 function addToList(){
   listInput = $('#category').val()+": "+$('#task').val();
@@ -11,11 +12,12 @@ function addToList(){
       'category': $('#category').val(),
       'description': $('#task').val(),
       'points': points,
-      'acct': userID
+      'acct': userID,
+      'est': parseFloat($("#hours").val())
     },function(result) {
       $('#taskList').append("<li id='"+result.t_id+"'> "+listInput+
       "<button onclick='specialComplete(\""+listInput+
-      "\","+points+","+result.t_id+")'> Finished Task </button>"+"</li>");
+      "\","+points+","+result.t_id+")'> Finished Task </button> </li>");
       $('#task').val('');
       $('#category').val('');
       currentTasks += 1;
@@ -52,6 +54,7 @@ function startRoulette(){
 }
 //This will complete a task
 function completedTask(){
+  actualTime = parseFloat(prompt("How many hours did it take?"))
   pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1]);
   taskCompleted = $('#currentTask').text();
   taskCompleted = taskCompleted.split(':');
@@ -63,8 +66,10 @@ function completedTask(){
 }
 
 function specialComplete(task,points,position){
+  actualTime = parseFloat(prompt("How many hours did it take?"))
   $.post("/completedTask",{
-    'id': position
+    'id': position,
+    'act': actualTime
   },function(result){
     pointsEarned = parseInt(points);
     taskCompleted = task;
@@ -81,6 +86,7 @@ function specialComplete(task,points,position){
 function retrieveData(){
   $("#taskList").empty();
   $("#completedTasks").empty();
+  totalDone = 0;
   if(userID == -1) {
     userID = parseInt(prompt("What is your account number?"));
   }
@@ -89,6 +95,7 @@ function retrieveData(){
   },function(a) {
     points = a.reduce(function(a,b){
       if (b.completed == true) {
+        totalDone += b.actualcompletion;
         return a + b.points;
       }
       else {
@@ -96,6 +103,7 @@ function retrieveData(){
       }
     },0);
     $('#totalPoints').text(points);
+    $("#hoursDone").text(totalDone + " hours Done");
     for(i = 0;i < a.length;i++) {
       if(a[i].completed == false) {
         $('#taskList').append("<li id="+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +

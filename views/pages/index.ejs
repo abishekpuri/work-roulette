@@ -11,9 +11,14 @@
     <h1> Add Tasks that need to be done </h1>
     <input type='text' id='category' placeholder='Category'></input>
     <input type='text' id='task' placeholder='Task'></input>
+    <input type='int'  id='hours' placeholder='Estimated Time (Hrs)'></input>
     <button id='addList' onclick='addToList()'>Add To List</button>
     <ul id='taskList'>
     </ul>
+  </div>
+  <div id="timeLeft">
+    <h1> Total Hours of Work Done: </h1>
+    <h2 id="hoursDone"> 0 Hours </h2>
   </div>
   <div id='roulette'>
     <button id='startRoulette' onclick='startRoulette()'> Start The Roulette! </button>
