@@ -29,7 +29,8 @@ app.post('/retrieve', function(req,res) {
 
 //This will change an uncompleted task to completed
 app.post("/completedTask", function(req,res) {
-  db.none("UPDATE tasks set completed = true,actualCompletion = ${act} where t_id=${id}",req.body)
+  db.none("UPDATE tasks set completed = true,actualcompletion = ${act},datecompleted = now() " +
+  " where t_id=${id}",req.body)
   .then(function(result) {
     res.send(result);
   }).catch(function(error) {
@@ -39,7 +40,7 @@ app.post("/completedTask", function(req,res) {
 
 //This will add a task to the task table
 app.post('/addTask',function(req,res) {
-  db.one('INSERT INTO tasks(category,description,points,acct,completed,estimatedCompletion) VALUES' +
+  db.one('INSERT INTO tasks(category,description,points,acct,completed,estimatedcompletion) VALUES' +
          '(${category},${description},${points},${acct},false,${est}) returning t_id', req.body)
   .then(function(result){
     res.send(result);

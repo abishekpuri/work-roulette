@@ -3,7 +3,7 @@ currentTaskPosition = 0;
 currentTasks = 0
 userID = -1;
 totalHours = 0;
-//This will add the listInput into the List of Tasks, assigning it a random number of points
+//This will add the listInput into the List of Tasks, assign it a random number of points
 function addToList(){
   listInput = $('#category').val()+": "+$('#task').val();
   points = (Math.floor(Math.random()*10)+1);
@@ -77,6 +77,7 @@ function specialComplete(task,points,position){
     $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
     $('#completedTasks').append("<li>"+taskCompleted+"</li>");
     $('#currentTask').text('');
+    $("#hoursDone").text(parseFloat($("#hoursDone").text()) + actualTime +  " hours Done");
     $('#pointsAvailable').text('');
     $('#completed').hide();
   })
