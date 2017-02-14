@@ -1,5 +1,6 @@
 drop table account cascade;
 drop table tasks;
+drop table meetings;
 
 create table account (
 user_id serial primary key,
@@ -11,6 +12,15 @@ acct int references account(user_id) on delete cascade,
 points int,
 category text,
 description text,
-estimatedCompletion int,
-actualCompletion int,
+estimatedCompletion float,
+actualCompletion float,
+datecompleted timestamp,
 completed bool);
+
+create table meetings (
+  m_id serial primary key,
+  acct int references account(user_id) on delete cascade,
+  category text,
+  description text,
+  meeting_time timestamp
+)

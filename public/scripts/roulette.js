@@ -5,9 +5,18 @@ userID = -1;
 totalHours = 0;
 //This will add the listInput into the List of Tasks, assign it a random number of points
 function addToList(){
+  if($("#activityType").val() == 'Meeting') {
+    addMeeting();
+  }
+  else {
+    addTask();
+  }
+}
+
+function addTask() {
   listInput = $('#category').val()+": "+$('#task').val();
   points = (Math.floor(Math.random()*10)+1);
-  if(listInput != '') {
+  if(listInput != ': ') {
     $.post('/addTask', {
       'category': $('#category').val(),
       'description': $('#task').val(),
@@ -15,7 +24,7 @@ function addToList(){
       'acct': userID,
       'est': parseFloat($("#hours").val())
     },function(result) {
-      $('#taskList').append("<li id='"+result.t_id+"'> "+listInput+
+      $('#taskList').append("<li id='t"+result.t_id+"'> "+listInput+
       "<button onclick='specialComplete(\""+listInput+
       "\","+points+","+result.t_id+")'> Finished Task </button> </li>");
       $('#task').val('');
@@ -28,6 +37,40 @@ function addToList(){
   }
 }
 
+function addMeeting() {
+  listInput = $('#category').val()+": "+$('#task').val() + " " + $("#meetingTime").val();
+  if(listInput != ': ') {
+    $.post('/addMeeting', {
+      'category': $('#category').val(),
+      'description': $('#task').val(),
+      'acct': userID,
+      'mtime': $("#meetingTime").val()
+    },function(result) {
+      $('#meetingList').append("<li id='m"+result.m_id+"'> "+listInput+
+      "<button onclick='meetingComplete(\""+listInput+
+      "\","+result.m_id+")'> Finished Task </button> </li>");
+      $('#task').val('');
+      $("#meetingTime").val('');
+      $('#category').val('');
+      currentTasks += 1;
+    })
+  }
+  else {
+    alert('Nothing entered into Input');
+  }
+}
+function adjustBoxes() {
+  if($("#activityType").val() == 'Meeting') {
+    $("#task").attr("placeholder","Meeting Description");
+    $("#hours").hide();
+    $("#meetingTime").show();
+  }
+  else {
+    $("#tasks").attr("placeholder","Task Description");
+    $("#hours").show();
+    $("#meetingTime").hide();
+  }
+}
 //This will delete a task from the list
 //TO DO : Currently not being used
 function deleteFromList(element){
@@ -52,18 +95,6 @@ function startRoulette(){
     alert("Haven't Finished the current task yet!");
   }
 }
-//This will complete a task
-function completedTask(){
-  actualTime = parseFloat(prompt("How many hours did it take?"))
-  pointsEarned = parseInt($("#pointsAvailable").text().split(':')[1]);
-  taskCompleted = $('#currentTask').text();
-  taskCompleted = taskCompleted.split(':');
-  $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
-  $('#completedTasks').append("<li>"+taskCompleted+"</li>");
-  $('#currentTask').text('');
-  $('#pointsAvailable').text('');
-  $('#completed').hide();
-}
 
 function specialComplete(task,points,position){
   actualTime = parseFloat(prompt("How many hours did it take?"))
@@ -73,15 +104,23 @@ function specialComplete(task,points,position){
   },function(result){
     pointsEarned = parseInt(points);
     taskCompleted = task;
-    $("#"+position).remove();
+    $("#t"+position).remove();
     $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
     $('#completedTasks').append("<li>"+taskCompleted+"</li>");
     $('#currentTask').text('');
     $("#hoursDone").text(parseFloat($("#hoursDone").text()) + actualTime +  " hours Done");
     $('#pointsAvailable').text('');
-    $('#completed').hide();
   })
 };
+
+function meetingComplete(task,position) {
+  $.post("/completedMeeting",{
+    'id': position
+  },function(result){
+    $("#m"+position).remove();
+    $('#completedTasks').append("<li> Meeting "+task+"</li>");
+  })
+}
 
 //This will get your data back using the user id
 function retrieveData(){
@@ -90,8 +129,9 @@ function retrieveData(){
   totalDone = 0;
   if(userID == -1) {
     userID = parseInt(prompt("What is your account number?"));
+    $("#userID").text(userID);
   }
-  $.post('/retrieve',{
+  $.post('/retrieveTasks',{
     'userID': userID
   },function(a) {
     points = a.reduce(function(a,b){
@@ -107,7 +147,7 @@ function retrieveData(){
     $("#hoursDone").text(totalDone + " hours Done");
     for(i = 0;i < a.length;i++) {
       if(a[i].completed == false) {
-        $('#taskList').append("<li id="+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +
+        $('#taskList').append("<li id=t"+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +
         "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
         +"</li>");
       }
@@ -116,12 +156,29 @@ function retrieveData(){
       }
     }
   })
+  $.post('/retrieveMeetings', {
+    'userID': userID
+  }, function(a) {
+    for(i = 0; i < a.length; i++) {
+      if(a[i].completed == false) {
+        $('#meetingList').append("<li id=m"+a[i].m_id+">"+a[i].category+": "+a[i].description+" " +
+        a[i].meeting_time.split("T")[0] + " " + a[i].meeting_time.split("T")[1].split("Z")[0]  
+        +" <button " + "onclick='meetingComplete" +
+        "(\""+a[i].category+": "+a[i].description+"\","+a[i].m_id+")'> Finished Task </button>"
+        +"</li>");
+      }
+      else {
+        $('#completedTasks').append("<li> Meeting "+a[i].category+": "+a[i].description+"</li>");
+      }
+    }
+  })
 }
 
 //This will assign the user an ID at the beginning of his session
 function assignID(){
   $.post('/assignID',{},function(a){
-    userID = a.user_id;
+    userID = parseInt(a.user_id);
+    $("#userID").text(userID);
   });
 }
 
@@ -148,17 +205,22 @@ function clock(minutes,reward_val) {
     }
   },1000);
 }
-// This allows the use of enter to submit a new task
-$(document).ready(function(){
-  $('#completed').hide();
-  $('#dialogBox').hide();
-  $('#listInput').focus();
+
+function login() {
   existinguser = confirm("Do you already have an account?");
   if(!existinguser) {
     assignID();
   } else {
     retrieveData();
   }
+}
+// This allows the use of enter to submit a new task
+$(document).ready(function(){
+  $('#completed').hide();
+  $('#dialogBox').hide();
+  $('#listInput').focus();
+  $("#meetingTime").hide();
+  login();
   $( "#task" ).keypress(function(e) {
     if(e.which == 13) {
       addToList();

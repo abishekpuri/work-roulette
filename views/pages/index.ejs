@@ -7,13 +7,22 @@
   <link rel="stylesheet" type="text/css" href="css/index.css">
 </header>
 <body>
+  <h1> Your ID is : </h1><h1 id="userID"></h1>
   <div id='tasks'>
-    <h1> Add Tasks that need to be done </h1>
+    <select id="activityType" onchange="adjustBoxes();">
+        <option value="Task">Task</option>
+        <option value="Meeting">Meeting</option>
+    </select>
     <input type='text' id='category' placeholder='Category'></input>
     <input type='text' id='task' placeholder='Task'></input>
+    <input type='datetime-local' id='meetingTime'>
     <input type='int'  id='hours' placeholder='Estimated Time (Hrs)'></input>
     <button id='addList' onclick='addToList()'>Add To List</button>
+    <h1> Tasks to Complete </h1>
     <ul id='taskList'>
+    </ul>
+    <h1> Meetings to Attend </h1>
+    <ul id='meetingList'>
     </ul>
   </div>
   <div id="timeLeft">
@@ -30,7 +39,7 @@
     <h1> All User Stats </h1>
     <h3>Points Earnt : </h3>
     <p id='totalPoints'>0</p>
-    <h3>Completed Tasks List </h3>
+    <h3>Completed Activities List </h3>
     <ul id='completedTasks'>
     </ul>
     <div id="dialogBox">

@@ -17,10 +17,21 @@ app.get('/', function(req, res) {
   res.render('pages/index');
 });
 
-app.post('/retrieve', function(req,res) {
+app.post('/retrieveTasks', function(req,res) {
   db.any('SELECT t_id,points,category,description,completed,actualcompletion FROM tasks WHERE ' +
   'acct=$1 order by category,description',[req.body.userID])
   .then(function(result) {
+    res.send(result);
+  }).catch(function(error) {
+    res.send("ERROR: " + error);
+  });
+})
+
+app.post('/retrieveMeetings', function(req,res) {
+  db.any('SELECT m_id,category,description,completed,meeting_time FROM meetings WHERE ' +
+  'acct=$1 order by category,description',[req.body.userID])
+  .then(function(result) {
+    console.log(result)
     res.send(result);
   }).catch(function(error) {
     res.send("ERROR: " + error);
@@ -38,10 +49,29 @@ app.post("/completedTask", function(req,res) {
   });
 })
 
+app.post("/completedMeeting", function(req,res) {
+  db.none("UPDATE meetings set completed = true where m_id = ${id}",req.body)
+  .then(function(result) {
+    res.send(result);
+  }).catch(function(error) {
+    res.send(error);
+  })
+})
+
 //This will add a task to the task table
 app.post('/addTask',function(req,res) {
   db.one('INSERT INTO tasks(category,description,points,acct,completed,estimatedcompletion) VALUES' +
          '(${category},${description},${points},${acct},false,${est}) returning t_id', req.body)
+  .then(function(result){
+    res.send(result);
+  }).catch(function(error){
+    res.send("ERROR : " + error);
+  });
+});
+
+app.post('/addMeeting',function(req,res) {
+  db.one('INSERT INTO meetings(category,description,acct,meeting_time,completed) VALUES' +
+         '(${category},${description},${acct},${mtime},false) returning m_id', req.body)
   .then(function(result){
     res.send(result);
   }).catch(function(error){
