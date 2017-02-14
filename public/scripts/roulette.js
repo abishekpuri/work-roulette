@@ -162,7 +162,7 @@ function retrieveData(){
     for(i = 0; i < a.length; i++) {
       if(a[i].completed == false) {
         $('#meetingList').append("<li id=m"+a[i].m_id+">"+a[i].category+": "+a[i].description+" " +
-        a[i].meeting_time.split("T")[0] + " " + a[i].meeting_time.split("T")[1].split("Z")[0]  
+        a[i].meeting_time.split("T")[0] + " " + a[i].meeting_time.split("T")[1].split("Z")[0]
         +" <button " + "onclick='meetingComplete" +
         "(\""+a[i].category+": "+a[i].description+"\","+a[i].m_id+")'> Finished Task </button>"
         +"</li>");

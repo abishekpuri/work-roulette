@@ -73,8 +73,10 @@ app.post('/addMeeting',function(req,res) {
   db.one('INSERT INTO meetings(category,description,acct,meeting_time,completed) VALUES' +
          '(${category},${description},${acct},${mtime},false) returning m_id', req.body)
   .then(function(result){
+    console.log(result);
     res.send(result);
   }).catch(function(error){
+    console.log(error);
     res.send("ERROR : " + error);
   });
 });
