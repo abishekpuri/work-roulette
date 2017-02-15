@@ -78,6 +78,15 @@ function deleteFromList(element){
     $(element).parent().remove();
   }
 }
+
+function updateEstimatedTime() {
+  $.post("/getTotalEstimatedTime", {
+    'id': userID
+  },function(result) {
+    console.log(result);
+    $("#estimatedTime").text(result.sum);
+  })
+}
 // This will begin the roulette
 function startRoulette(){
   if($('#currentTask').text()=='') {
@@ -130,6 +139,7 @@ function retrieveData(){
   if(userID == -1) {
     userID = parseInt(prompt("What is your account number?"));
     $("#userID").text(userID);
+    updateEstimatedTime();
   }
   $.post('/retrieveTasks',{
     'userID': userID
@@ -179,6 +189,7 @@ function assignID(){
   $.post('/assignID',{},function(a){
     userID = parseInt(a.user_id);
     $("#userID").text(userID);
+    updateEstimatedTime();
   });
 }
 

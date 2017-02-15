@@ -22,5 +22,6 @@ create table meetings (
   acct int references account(user_id) on delete cascade,
   category text,
   description text,
-  meeting_time timestamp
+  meeting_time timestamp,
+  completed bool
 )
