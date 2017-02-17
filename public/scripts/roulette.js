@@ -30,6 +30,7 @@ function addTask() {
       $('#task').val('');
       $('#category').val('');
       currentTasks += 1;
+      updateEstimatedTime();
     })
   }
   else {
@@ -119,6 +120,7 @@ function specialComplete(task,points,position){
     $('#currentTask').text('');
     $("#hoursDone").text(parseFloat($("#hoursDone").text()) + actualTime +  " hours Done");
     $('#pointsAvailable').text('');
+    updateEstimatedTime();
   })
 };
 
