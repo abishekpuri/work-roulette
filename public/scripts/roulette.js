@@ -97,7 +97,7 @@ function startRoulette(){
     task = $('#taskList li').get(taskToDoIndex).innerHTML;
     task = task.split('|');
     task[1] = parseInt(task[1]);
-    $('#currentTask').text('The Roulette Assigned Task Is : ' + task[0]);
+    $('#currentTask').innerHTML('The Roulette Assigned Task Is : ' + task[0]);
     $('#pointsAvailable').text('The Number of Points Up For Grabs are : '+task[1]);
     $('#completed').show();
   }
