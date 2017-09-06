@@ -18,8 +18,8 @@ app.get('/', function(req, res) {
 });
 
 app.post('/retrieveTasks', function(req,res) {
-  db.any('SELECT t_id,points,category,description,completed,actualcompletion FROM tasks WHERE ' +
-  'acct=$1 order by category,description',[req.body.userID])
+  db.any('SELECT t_id,points,category,description,completed,actualcompletion,priority FROM tasks WHERE ' +
+  'acct=$1 order by category,priority',[req.body.userID])
   .then(function(result) {
     res.send(result);
   }).catch(function(error) {

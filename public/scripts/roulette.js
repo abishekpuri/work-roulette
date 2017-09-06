@@ -161,7 +161,7 @@ function retrieveData(){
     $("#hoursDone").text(totalDone + " hours Done");
     for(i = 0;i < a.length;i++) {
       if(a[i].completed == false) {
-        $('#taskList').append("<li id=t"+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +
+        $('#taskList').append("<li class = "+a[i].priority + " id=t"+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +
         "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
         +"</li>");
       }
