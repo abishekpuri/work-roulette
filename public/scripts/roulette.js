@@ -27,7 +27,7 @@ function addTask() {
       'est': parseFloat($("#hours").val())
     },function(result) {
       p = parseInt($("#priority").val());
-      rgb = "style='background-color:rgb(" + 63*(5 - p) + "," + 63 * (p - 1) + ",0)'";
+      rgb = "style='background-color:rgb(" + (p<4 ? 255 : (5 - p) * 161)  + "," + (p > 2 ? 255 : (p - 1) * 161) + ",0)'";
       colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
       $('#taskList').append("<li id='t"+result.t_id+"'> " + colorbox +listInput+
       " <button onclick='specialComplete(\""+listInput+
