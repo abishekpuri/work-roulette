@@ -17,6 +17,13 @@
     <input type='text' id='task' placeholder='Task'></input>
     <input type='datetime-local' id='meetingTime'>
     <input type='int'  id='hours' placeholder='Estimated Time (Hrs)'></input>
+    <select id="priority">
+      <option value = "1"> 1 - Highest Priority </option>
+      <option value = "2"> 2 </option>
+      <option value = "3"> 3 </option>
+      <option value = "4"> 4 </option>
+      <option value = "5"> 5 - Lowest Priority </option>
+    </select>
     <button id='addList' onclick='addToList()'>Add To List</button>
     <h1> Tasks to Complete </h1>
     <ul id='taskList'>

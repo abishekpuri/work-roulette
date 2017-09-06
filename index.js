@@ -1,4 +1,4 @@
-  var express = require('express');
+var express = require('express');
 var pgp = require('pg-promise')();
 var bodyParser = require("body-parser");
 var app = express();
@@ -59,8 +59,8 @@ app.post("/completedMeeting", function(req,res) {
 
 //This will add a task to the task table
 app.post('/addTask',function(req,res) {
-  db.one('INSERT INTO tasks(category,description,points,acct,completed,estimatedcompletion) VALUES' +
-         '(${category},${description},${points},${acct},false,${est}) returning t_id', req.body)
+  db.one('INSERT INTO tasks(category,description,points,acct,completed,estimatedcompletion,priority) VALUES' +
+         '(${category},${description},${points},${acct},false,${est},${priority}) returning t_id', req.body)
   .then(function(result){
     res.send(result);
   }).catch(function(error){

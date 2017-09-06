@@ -9,6 +9,7 @@ points int);
 create table tasks (
 t_id serial primary key,
 acct int references account(user_id) on delete cascade,
+priority int,
 points int,
 category text,
 description text,

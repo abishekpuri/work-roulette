@@ -16,12 +16,14 @@ function addToList(){
 function addTask() {
   listInput = $('#category').val()+": "+$('#task').val();
   points = (Math.floor(Math.random()*10)+1);
+  console.log(parseInt($("#priority").val()))
   if(listInput != ': ') {
     $.post('/addTask', {
       'category': $('#category').val(),
       'description': $('#task').val(),
       'points': points,
       'acct': userID,
+      'priority': parseInt($("#priority").val()),
       'est': parseFloat($("#hours").val())
     },function(result) {
       $('#taskList').append("<li id='t"+result.t_id+"'> "+listInput+
