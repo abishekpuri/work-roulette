@@ -57,7 +57,5 @@
   height: 10px;
   display: inline-block;
   background-color: #ccc;
-  position: absolute;
-  left: 5px;
-  top: 5px;
+  position: relative;
 }

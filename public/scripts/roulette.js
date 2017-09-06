@@ -26,8 +26,11 @@ function addTask() {
       'priority': parseInt($("#priority").val()),
       'est': parseFloat($("#hours").val())
     },function(result) {
-      $('#taskList').append("<li id='t"+result.t_id+"'> "+listInput+
-      "<button onclick='specialComplete(\""+listInput+
+      p = parseInt($("#priority").val());
+      rgb = "style='background-color:rgb(" + 63*(5 - p) + "," + 63 * (p - 1) + ",0)'";
+      colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
+      $('#taskList').append("<li id='t"+result.t_id+"'> " + colorbox +listInput+
+      " <button onclick='specialComplete(\""+listInput+
       "\","+points+","+result.t_id+")'> Finished Task </button> </li>");
       $('#task').val('');
       $('#category').val('');
@@ -161,7 +164,7 @@ function retrieveData(){
     $("#hoursDone").text(totalDone + " hours Done");
     for(i = 0;i < a.length;i++) {
       if(a[i].completed == false) {
-        p = a[i].priority
+        p = a[i].priority;
         rgb = "style='background-color:rgb(" + 63*(5 - p) + "," + 63 * (p - 1) + ",0)'";
         colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
         $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox +a[i].category+": "+a[i].description+" <button " +
