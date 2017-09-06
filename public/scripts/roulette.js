@@ -165,7 +165,7 @@ function retrieveData(){
     for(i = 0;i < a.length;i++) {
       if(a[i].completed == false) {
         p = a[i].priority;
-        rgb = "style='background-color:rgb(" + 63*(5 - p) + "," + 63 * (p - 1) + ",0)'";
+        rgb = "style='background-color:rgb(" + (p<4 ? 255 : (5 - p) * 161)  + "," + (p > 2 ? 255 : (p - 1) * 161) + ",0)'";
         colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
         $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox +a[i].category+": "+a[i].description+" <button " +
         "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
