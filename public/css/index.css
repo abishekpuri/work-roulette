@@ -51,3 +51,19 @@
     background:rgba(0,0,0,1);
     text-decoration:none;
 }
+
+[class="1"] {
+  background-color: rgb(255,0,0);
+}
+[class="2"] {
+  background-color: rgb(200,80,0);
+}
+[class="3"] {
+  background-color: rgb(125,125,0);
+}
+[class="4"] {
+  background-color: rgb(80,200,0);
+}
+[class="5"] {
+  background-color: rgb(0,255,0);
+}
