@@ -163,8 +163,8 @@ function retrieveData(){
       if(a[i].completed == false) {
         p = a[i].priority
         rgb = "style='background-color:rgb(" + 63*(5 - p) + "," + 63 * (p - 1) + ",0)'";
-        colorbox = "<div class = 'color-box'" + rgb + "></div>"
-        $('#taskList').append("<li " + colorbox + " id=t"+a[i].t_id+">"+a[i].category+": "+a[i].description+" <button " +
+        colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
+        $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox +a[i].category+": "+a[i].description+" <button " +
         "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
         +"</li>");
       }
