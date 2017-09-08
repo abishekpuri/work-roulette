@@ -13,6 +13,14 @@ function addToList(){
   }
 }
 
+function sortByPriority() {
+  retrieveData(1);
+}
+
+function sortByCategory() {
+  retrieveData(0);
+}
+
 function addTask() {
   listInput = $('#category').val()+": "+$('#task').val();
   points = (Math.floor(Math.random()*10)+1);
@@ -137,9 +145,49 @@ function meetingComplete(task,position) {
     $('#completedTasks').append("<li> Meeting "+task+"</li>");
   })
 }
+function taskUpdating(a) {
+  points = a.reduce(function(a,b){
+    if (b.completed == true) {
+      totalDone += b.actualcompletion;
+      return a + b.points;
+    }
+    else {
+      return a;
+    }
+  },0);
+  $('#totalPoints').text(points);
+  $("#hoursDone").text(totalDone + " hours Done");
+  for(i = 0;i < a.length;i++) {
+    if(a[i].completed == false) {
+      p = a[i].priority;
+      rgb = "style='background-color:rgb(" + (p<4 ? 255 : (5 - p) * 161)  + "," + (p > 2 ? 255 : (p - 1) * 161) + ",0)'";
+      colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
+      $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox +a[i].category+": "+a[i].description+" <button " +
+      "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
+      +"</li>");
+    }
+    else {
+      $('#completedTasks').append("<li>"+a[i].category+": "+a[i].description+"</li>");
+    }
+  }
+}
 
+function meetingUpdate(a) {
+  for(i = 0; i < a.length; i++) {
+    if(a[i].completed == false) {
+      $('#meetingList').append("<li id=m"+a[i].m_id+">"+a[i].category+": "+a[i].description+" " +
+      a[i].meeting_time.split("T")[0] + " " + a[i].meeting_time.split("T")[1].split("Z")[0]
+      +" <button " + "onclick='meetingComplete" +
+      "(\""+a[i].category+": "+a[i].description+"\","+a[i].m_id+")'> Finished Task </button>"
+      +"</li>");
+    }
+    else {
+      $('#completedTasks').append("<li> Meeting "+a[i].category+": "+a[i].description+"</li>");
+    }
+  }
+}
 //This will get your data back using the user id
-function retrieveData(){
+function retrieveData(priority){
   $("#taskList").empty();
   $("#completedTasks").empty();
   totalDone = 0;
@@ -148,50 +196,18 @@ function retrieveData(){
     $("#userID").text(userID);
     updateEstimatedTime();
   }
-  $.post('/retrieveTasks',{
-    'userID': userID
-  },function(a) {
-    points = a.reduce(function(a,b){
-      if (b.completed == true) {
-        totalDone += b.actualcompletion;
-        return a + b.points;
-      }
-      else {
-        return a;
-      }
-    },0);
-    $('#totalPoints').text(points);
-    $("#hoursDone").text(totalDone + " hours Done");
-    for(i = 0;i < a.length;i++) {
-      if(a[i].completed == false) {
-        p = a[i].priority;
-        rgb = "style='background-color:rgb(" + (p<4 ? 255 : (5 - p) * 161)  + "," + (p > 2 ? 255 : (p - 1) * 161) + ",0)'";
-        colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
-        $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox +a[i].category+": "+a[i].description+" <button " +
-        "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
-        +"</li>");
-      }
-      else {
-        $('#completedTasks').append("<li>"+a[i].category+": "+a[i].description+"</li>");
-      }
-    }
-  })
+  if(priority) {
+    $.post('/retrieveTasksPriority',{
+      'userID': userID
+    },taskUpdating);
+  } else {
+    $.post('/retrieveTasks',{
+      'userID': userID
+    },taskUpdating);
+  }
   $.post('/retrieveMeetings', {
     'userID': userID
-  }, function(a) {
-    for(i = 0; i < a.length; i++) {
-      if(a[i].completed == false) {
-        $('#meetingList').append("<li id=m"+a[i].m_id+">"+a[i].category+": "+a[i].description+" " +
-        a[i].meeting_time.split("T")[0] + " " + a[i].meeting_time.split("T")[1].split("Z")[0]
-        +" <button " + "onclick='meetingComplete" +
-        "(\""+a[i].category+": "+a[i].description+"\","+a[i].m_id+")'> Finished Task </button>"
-        +"</li>");
-      }
-      else {
-        $('#completedTasks').append("<li> Meeting "+a[i].category+": "+a[i].description+"</li>");
-      }
-    }
-  })
+  },meetingUpdate)
 }
 
 //This will assign the user an ID at the beginning of his session

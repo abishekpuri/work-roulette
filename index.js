@@ -27,6 +27,16 @@ app.post('/retrieveTasks', function(req,res) {
   });
 })
 
+app.post('/retrieveTasksPriority', function(req,res) {
+  db.any('SELECT t_id,points,category,description,completed,actualcompletion,priority FROM tasks WHERE ' +
+  'acct=$1 order by priority,category',[req.body.userID])
+  .then(function(result) {
+    res.send(result);
+  }).catch(function(error) {
+    res.send("ERROR: " + error);
+  });
+})
+
 app.post('/retrieveMeetings', function(req,res) {
   db.any('SELECT m_id,category,description,completed,meeting_time FROM meetings WHERE ' +
   'acct=$1 order by category,description',[req.body.userID])
