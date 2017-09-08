@@ -3,11 +3,15 @@
 <header>
   <!-- Importing JQuery and Bootstrap -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
   <script src="scripts/roulette.js"></script>
   <link rel="stylesheet" type="text/css" href="css/index.css">
 </header>
 <body>
-  <h1> Your ID is : <h1 id="userID"></h1></h1>
+  <h1> Work Roulette </h1>
+  <h1> Your ID is : <span id="userID"></span> </h1>
   <div id='tasks'>
     <select id="activityType" onchange="adjustBoxes();">
         <option value="Task">Task</option>
@@ -24,13 +28,13 @@
       <option value = "4"> 4 </option>
       <option value = "5"> 5 - Lowest Priority </option>
     </select>
-    <button id='addList' onclick='addToList()'>Add To List</button>
-    <h1> Tasks to Complete <button id='sortByPriority' onclick='sortByPriority()'> Sort by Priority </button>
-    <button id='sortByCategory' onclick='sortByCategory()'> Sort by Category </button></h1>
-    <ul id='taskList'>
-    </ul>
-    <h1> Meetings to Attend </h1>
-    <ul id='meetingList'>
+    <button class="btn btn-xs" id='addList' onclick='addToList()'>Add To List</button>
+    <div id="TaskButtons" style="padding-top:10px">
+    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#taskList"> All Tasks </button>
+    <button class="btn btn-info" id='sortByPriority' onclick='sortByPriority()'> Sort by Priority </button>
+    <button class="btn btn-info" id='sortByCategory' onclick='sortByCategory()'> Sort by Category </button>
+  </div>
+    <ul id='taskList' class="collapse">
     </ul>
   </div>
   <div id="timeLeft">
