@@ -107,7 +107,7 @@ function startRoulette(){
     allTasks = $('#taskList').children('li');
     taskToDoIndex = Math.floor(Math.random()*allTasks.length);
     currentTaskPosition = taskToDoIndex;
-    task = $('#taskList li p').get(taskToDoIndex).innerHTML;
+    task = $('#taskList li span').get(taskToDoIndex).innerHTML;
     $('#currentTask').text('The Roulette Assigned Task Is : ' + task);
     $('#completed').show();
   }
@@ -159,7 +159,7 @@ function taskUpdating(a) {
       p = a[i].priority;
       rgb = "style='background-color:rgb(" + (p<4 ? 255 : (5 - p) * 161)  + "," + (p > 2 ? 255 : (p - 1) * 161) + ",0)'";
       colorbox = "<div class = 'priority-display'" + rgb + "></div>  "
-      $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox + "<p>" + a[i].category+": "+a[i].description+" </p> <button " +
+      $('#taskList').append("<li "+" id=t"+a[i].t_id+">"+ colorbox + "<span>" + a[i].category+": "+a[i].description+" </span> <button " +
       "onclick='specialComplete(\""+a[i].category+": "+a[i].description+"\","+a[i].points+","+a[i].t_id+")'> Finished Task </button>"
       +"</li>");
     }
