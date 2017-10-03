@@ -129,7 +129,8 @@ function specialComplete(task,points,position){
     $('#totalPoints').text(parseInt($('#totalPoints').text())+pointsEarned);
     $('#completedTasks').append("<li>"+taskCompleted+"</li>");
     $('#currentTask').text('');
-    $("#hoursDone").text(parseFloat(parseFloat($("#hoursDone").text()).toFixed(2)) + parseFloat(actualTime.toFixed(2)) +  " hours Done");
+    console.log()
+    $("#hoursDone").text((parseFloat($("#hoursDone").text()) + parseFloat(actualTime)).toFixed(2) +  " hours Done");
     $('#pointsAvailable').text('');
     updateEstimatedTime();
   })
